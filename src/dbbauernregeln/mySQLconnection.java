@@ -11,33 +11,36 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
+import java.util.List;
 
 /**
  *
  * @author Arjuna
  */
 public class mySQLconnection {
-    
-  private Connection connect = null;
-  private Statement statement = null;
-  private PreparedStatement preparedStatement = null;
-  private ResultSet resultSet = null;
-    
-  public void readDataBase() throws Exception {
-    try {
-      // This will load the MySQL driver, each DB has its own driver
-      Class.forName("com.mysql.jdbc.Driver");
-      // Setup the connection with the DB
-      connect = DriverManager.getConnection("jdbc:mysql://localhost:3306?autoReconnect=true&useSSL=false", "arjuna", "fadda");
 
-      // Statements allow to issue SQL queries to the database
-      statement = connect.createStatement();
-      // Result set get the result of the SQL query
-      resultSet = statement.executeQuery("select * from wetter.wetterdaten");
-      
-      writeResultSet(resultSet);
-/*
+    private  Connection connect ;
+    private Statement statement = null;
+    private PreparedStatement preparedStatement = null;
+    private ResultSet resultSet = null;
+
+    public mySQLconnection() throws SQLException {
+        connect=DriverManager.getConnection("jdbc:mysql://localhost:3306?autoReconnect=true&useSSL=false", "arjuna", "fadda");
+    }
+
+    public void readDataBase() throws Exception {
+        try {
+            // This will load the MySQL driver, each DB has its own driver
+            Class.forName("com.mysql.jdbc.Driver");
+            // Setup the connection with the DB
+          
+            // Statements allow to issue SQL queries to the database
+            statement = connect.createStatement();
+            // Result set get the result of the SQL query
+            resultSet = statement.executeQuery("select * from wetter.wetterdaten");
+
+            writeResultSet(resultSet);
+            /*
       // PreparedStatements can use variables and are more efficient
       preparedStatement = connect
           .prepareStatement("insert into  wetter.wetterdaten values (default, ?, ?, ?, ? , ?, ?)");
@@ -65,55 +68,97 @@ public class mySQLconnection {
       resultSet = statement
       .executeQuery("select * from feedback.comments");
       writeMetaData(resultSet);
-      */
-    } catch (Exception e) {
-      throw e;
-    } finally {
-      close();
+             */
+        } catch (Exception e) {
+            throw e;
+        }
     }
-  }
-    /*
-  private void writeMetaData(ResultSet resultSet) throws SQLException {
-    //   Now get some metadata from the database
-    // Result set get the result of the SQL query
-    
-    System.out.println("The columns in the table are: ");
-    
-    System.out.println("Table: " + resultSet.getMetaData().getTableName(1));
-    for  (int i = 1; i<= resultSet.getMetaData().getColumnCount(); i++){
-      System.out.println("Column " +i  + " "+ resultSet.getMetaData().getColumnName(i));
+
+    public void insertIntoDatabase(List<Wettereintrag> daten) throws SQLException {
+        for (int i = 0; i < daten.size(); i++) {
+            try {
+                preparedStatement = connect
+                        .prepareStatement("insert into  wetter.wetterdaten values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                // Parameters start with 1
+                preparedStatement.setString(1, daten.get(i).STATION);
+                preparedStatement.setInt(2, daten.get(i).MESS_DATUM);
+                preparedStatement.setInt(3, daten.get(i).QUALITAETS_NIVEAU);
+                preparedStatement.setFloat(4, daten.get(i).LUFTTEMPERATUR);
+                preparedStatement.setFloat(5, daten.get(i).DAMPFDRUCK);
+                preparedStatement.setFloat(6, daten.get(i).BEDECKUNGSGRAD);
+                preparedStatement.setFloat(7, daten.get(i).LUFTDRUCK_STATIONSHOEHE);
+                preparedStatement.setFloat(8, daten.get(i).REL_FEUCHTE);
+                preparedStatement.setFloat(9, daten.get(i).WINDGESCHWINDIGKEIT);
+                preparedStatement.setFloat(10, daten.get(i).LUFTTEMPERATUR_MAXIMUM);
+                preparedStatement.setFloat(11, daten.get(i).LUFTTEMPERATUR_MINIMUM);
+                preparedStatement.setFloat(12, daten.get(i).LUFTTEMP_AM_ERDB_MINIMUM);
+                preparedStatement.setFloat(13, daten.get(i).WINDSPITZE_MAXIMUM);
+                preparedStatement.setFloat(14, daten.get(i).NIEDERSCHLAGSHOEHE);
+                preparedStatement.setInt(15, daten.get(i).NIEDERSCHLAGSHOEHE_IND);
+                preparedStatement.setFloat(16, daten.get(i).SONNENSCHEINDAUER);
+                preparedStatement.setInt(17, daten.get(i).SCHNEEHOEHE);
+                preparedStatement.setString(18, daten.get(i).eor);
+                preparedStatement.executeUpdate();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
-  }
-*/
-  private void writeResultSet(ResultSet resultSet) throws SQLException {
-    // ResultSet is initially before the first data set
-    while (resultSet.next()) {
-      // It is possible to get the columns via name
-      // also possible to get the columns via the column number
-      // which starts at 1
-      // e.g. resultSet.getSTring(2);
-      System.out.println(resultSet.getString("LUFTDRUCK_STATIONSHOEHE"));
+
+    private String inString(int i) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("");
+        sb.append(i);
+        return sb.toString();
     }
-  }
 
-  // You need to close the resultSet
-  private void close() {
-      
-    try {
-      if (resultSet != null) {
-        resultSet.close();
-      }
-
-      if (statement != null) {
-        statement.close();
-      }
-
-      if (connect != null) {
-        connect.close();
-      }
-    } catch (Exception e) {
-
+    private String inString(float f) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("");
+        sb.append(f);
+        return sb.toString();
     }
-  }
-    
+
+    private void writeMetaData(ResultSet resultSet) throws SQLException {
+        //   Now get some metadata from the database
+        // Result set get the result of the SQL query
+
+        System.out.println("The columns in the table are: ");
+
+        System.out.println("Table: " + resultSet.getMetaData().getTableName(1));
+        for (int i = 1; i <= resultSet.getMetaData().getColumnCount(); i++) {
+            System.out.println("Column " + i + " " + resultSet.getMetaData().getColumnName(i));
+        }
+    }
+
+    private void writeResultSet(ResultSet resultSet) throws SQLException {
+        // ResultSet is initially before the first data set
+        while (resultSet.next()) {
+            // It is possible to get the columns via name
+            // also possible to get the columns via the column number
+            // which starts at 1
+            // e.g. resultSet.getSTring(2);
+        }
+    }
+
+    // You need to close the resultSet
+    public void close() {
+
+        try {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+
+            if (statement != null) {
+                statement.close();
+            }
+
+            if (connect != null) {
+                connect.close();
+            }
+        } catch (Exception e) {
+
+        }
+    }
+
 }
