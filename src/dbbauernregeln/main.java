@@ -34,6 +34,8 @@ public class main {
             mySQLconnection blubb = new mySQLconnection();
             blubb.readDataBase();
 
+            
+            /*
             File f = new File("Wetterdaten/");
             File[] files = f.listFiles();
             if (files != null) { // Erforderliche Berechtigungen etc. sind vorhanden
@@ -46,6 +48,9 @@ public class main {
                 }
             }
             // blubb.insertIntoDatabase(readFile("Wetterdaten/Cottbus_Tageswerte_20141130_20160601.txt"));
+            */
+            
+            
             blubb.close();
         } catch (Exception e) {
             System.out.println(e);
