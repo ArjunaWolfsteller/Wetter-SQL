@@ -35,7 +35,7 @@ public class main {
             blubb.readDataBase();
 
             
-            /*
+            
             File f = new File("Wetterdaten/");
             File[] files = f.listFiles();
             if (files != null) { // Erforderliche Berechtigungen etc. sind vorhanden
@@ -43,12 +43,13 @@ public class main {
                     if ((!files[i].isDirectory())) {
 
                         blubb.insertIntoDatabase(readFile(files[i].getAbsolutePath()));
+                        System.out.println(files[i].getAbsolutePath() + " beendet");
 
                     }
                 }
             }
             // blubb.insertIntoDatabase(readFile("Wetterdaten/Cottbus_Tageswerte_20141130_20160601.txt"));
-            */
+            
             
             
             blubb.close();
