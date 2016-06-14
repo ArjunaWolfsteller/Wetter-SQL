@@ -42,14 +42,14 @@ public class mySQLconnection {
 
             List<Wettereintrag> result = new ArrayList<Wettereintrag>();
             while (resultSet.next()) {
-            // It is possible to get the columns via name
+                // It is possible to get the columns via name
                 // also possible to get the columns via the column number
                 // which starts at 1
                 result.add(new Wettereintrag(resultSet.getString(1), resultSet.getInt(2), resultSet.getInt(3), resultSet.getFloat(4), resultSet.getFloat(5), resultSet.getFloat(6), resultSet.getFloat(7), resultSet.getFloat(8), resultSet.getFloat(9), resultSet.getFloat(10), resultSet.getFloat(11), resultSet.getFloat(12), resultSet.getFloat(13), resultSet.getFloat(14), resultSet.getInt(15), resultSet.getFloat(16), resultSet.getInt(17), resultSet.getString(18)));
 
             }
 
-            return  result;
+            return result;
             /*
              writeResultSet(resultSet);
         

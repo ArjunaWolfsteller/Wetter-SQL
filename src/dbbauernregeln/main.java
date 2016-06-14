@@ -31,12 +31,13 @@ public class main {
         try {
 
             mySQLconnection DBaccess = new mySQLconnection();
+            // DBaccess.insertIntoDatabase(readFile("Wetterdaten/Berlin-Dahlem_klima_Tageswerte_19500101_20151231_00403.txt"));
+
             List<Wettereintrag> result = DBaccess.readDataBase("select * from wetter.wetterdaten");
 
-            
-            
-            
-            
+            analyse.siebenschlaefertag(result);
+
+            //alle daten in die DB Bank
             /*
              File f = new File("Wetterdaten/");
              File[] files = f.listFiles();
