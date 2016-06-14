@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sun.misc.IOUtils;
 
 /**
  *
@@ -31,27 +30,28 @@ public class main {
 
         try {
 
-            mySQLconnection blubb = new mySQLconnection();
-            blubb.readDataBase();
+            mySQLconnection DBaccess = new mySQLconnection();
+            List<Wettereintrag> result = DBaccess.readDataBase("select * from wetter.wetterdaten");
 
+            
+            
+            
             
             /*
-            File f = new File("Wetterdaten/");
-            File[] files = f.listFiles();
-            if (files != null) { // Erforderliche Berechtigungen etc. sind vorhanden
-                for (int i = 0; i < files.length; i++) {
-                    if ((!files[i].isDirectory())) {
+             File f = new File("Wetterdaten/");
+             File[] files = f.listFiles();
+             if (files != null) { // Erforderliche Berechtigungen etc. sind vorhanden
+             for (int i = 0; i < files.length; i++) {
+             if ((!files[i].isDirectory())) {
 
-                        blubb.insertIntoDatabase(readFile(files[i].getAbsolutePath()));
+             DBaccess.insertIntoDatabase(readFile(files[i].getAbsolutePath()));
 
-                    }
-                }
-            }
-            // blubb.insertIntoDatabase(readFile("Wetterdaten/Cottbus_Tageswerte_20141130_20160601.txt"));
-            */
-            
-            
-            blubb.close();
+             }
+             }
+             }
+             // DBaccess.insertIntoDatabase(readFile("Wetterdaten/Cottbus_Tageswerte_20141130_20160601.txt"));
+             */
+            DBaccess.close();
         } catch (Exception e) {
             System.out.println(e);
         }

@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,55 +20,66 @@ import java.util.List;
  */
 public class mySQLconnection {
 
-    private  Connection connect ;
+    private Connection connect;
     private Statement statement = null;
     private PreparedStatement preparedStatement = null;
     private ResultSet resultSet = null;
 
     public mySQLconnection() throws SQLException {
-        connect=DriverManager.getConnection("jdbc:mysql://localhost:3306?autoReconnect=true&useSSL=false", "arjuna", "fadda");
+        // This will load the MySQL driver, each DB has its own driver
+        //   Class.forName("com.mysql.jdbc.Driver");
+        // Setup the connection with the DB
+        connect = DriverManager.getConnection("jdbc:mysql://localhost:3306?autoReconnect=true&useSSL=false", "arjuna", "fadda");
     }
 
-    public void readDataBase() throws Exception {
+    public List<Wettereintrag> readDataBase(String query) throws Exception {
         try {
-            // This will load the MySQL driver, each DB has its own driver
-            Class.forName("com.mysql.jdbc.Driver");
-            // Setup the connection with the DB
-          
+
             // Statements allow to issue SQL queries to the database
             statement = connect.createStatement();
             // Result set get the result of the SQL query
-            resultSet = statement.executeQuery("select * from wetter.wetterdaten");
+            resultSet = statement.executeQuery(query);
 
-            writeResultSet(resultSet);
+            List<Wettereintrag> result = new ArrayList<Wettereintrag>();
+            while (resultSet.next()) {
+            // It is possible to get the columns via name
+                // also possible to get the columns via the column number
+                // which starts at 1
+                result.add(new Wettereintrag(resultSet.getString(1), resultSet.getInt(2), resultSet.getInt(3), resultSet.getFloat(4), resultSet.getFloat(5), resultSet.getFloat(6), resultSet.getFloat(7), resultSet.getFloat(8), resultSet.getFloat(9), resultSet.getFloat(10), resultSet.getFloat(11), resultSet.getFloat(12), resultSet.getFloat(13), resultSet.getFloat(14), resultSet.getInt(15), resultSet.getFloat(16), resultSet.getInt(17), resultSet.getString(18)));
+
+            }
+
+            return  result;
             /*
-      // PreparedStatements can use variables and are more efficient
-      preparedStatement = connect
-          .prepareStatement("insert into  wetter.wetterdaten values (default, ?, ?, ?, ? , ?, ?)");
-      // "myuser, webpage, datum, summery, COMMENTS from feedback.comments");
-      // Parameters start with 1
-      preparedStatement.setString(1, "Test");
-      preparedStatement.setString(2, "TestEmail");
-      preparedStatement.setString(3, "TestWebpage");
-      preparedStatement.setDate(4, new java.sql.Date(2009, 12, 11));
-      preparedStatement.setString(5, "TestSummary");
-      preparedStatement.setString(6, "TestComment");
-      preparedStatement.executeUpdate();
+             writeResultSet(resultSet);
+        
+             // PreparedStatements can use variables and are more efficient
+             preparedStatement = connect
+             .prepareStatement("insert into  wetter.wetterdaten values (default, ?, ?, ?, ? , ?, ?)");
+             // "myuser, webpage, datum, summery, COMMENTS from feedback.comments");
+             // Parameters start with 1
+             preparedStatement.setString(1, "Test");
+             preparedStatement.setString(2, "TestEmail");
+             preparedStatement.setString(3, "TestWebpage");
+             preparedStatement.setDate(4, new java.sql.Date(2009, 12, 11));
+             preparedStatement.setString(5, "TestSummary");
+             preparedStatement.setString(6, "TestComment");
+             preparedStatement.executeUpdate();
 
-      preparedStatement = connect
-          .prepareStatement("SELECT myuser, webpage, datum, summery, COMMENTS from feedback.comments");
-      resultSet = preparedStatement.executeQuery();
-      writeResultSet(resultSet);
+             preparedStatement = connect
+             .prepareStatement("SELECT myuser, webpage, datum, summery, COMMENTS from feedback.comments");
+             resultSet = preparedStatement.executeQuery();
+             writeResultSet(resultSet);
 
-      // Remove again the insert comment
-      preparedStatement = connect
-      .prepareStatement("delete from feedback.comments where myuser= ? ; ");
-      preparedStatement.setString(1, "Test");
-      preparedStatement.executeUpdate();
+             // Remove again the insert comment
+             preparedStatement = connect
+             .prepareStatement("delete from feedback.comments where myuser= ? ; ");
+             preparedStatement.setString(1, "Test");
+             preparedStatement.executeUpdate();
       
-      resultSet = statement
-      .executeQuery("select * from feedback.comments");
-      writeMetaData(resultSet);
+             resultSet = statement
+             .executeQuery("select * from feedback.comments");
+             writeMetaData(resultSet);
              */
         } catch (Exception e) {
             throw e;
@@ -133,11 +145,26 @@ public class mySQLconnection {
 
     private void writeResultSet(ResultSet resultSet) throws SQLException {
         // ResultSet is initially before the first data set
+ /*
+         // simple JDBC code to run SQL query and populate resultSet - END
+         List<Wettereintrag> pojoList = resultSetMapper.mapRersultSetToObject(resultSet, Wettereintrag.class);
+         // print out the list retrieved from database
+         if(pojoList != null){
+         for(SamplePojo pojo : pojoList){
+         System.out.println(pojo);
+         }
+         }else{
+         System.out.println("ResultSet is empty. Please check if database table is empty");
+         }
+        
+         */
+        List<Wettereintrag> result = new ArrayList<Wettereintrag>();
         while (resultSet.next()) {
             // It is possible to get the columns via name
             // also possible to get the columns via the column number
             // which starts at 1
-            // e.g. resultSet.getSTring(2);
+            result.add(new Wettereintrag(resultSet.getString(1), resultSet.getInt(2), resultSet.getInt(3), resultSet.getFloat(4), resultSet.getFloat(5), resultSet.getFloat(6), resultSet.getFloat(7), resultSet.getFloat(8), resultSet.getFloat(9), resultSet.getFloat(10), resultSet.getFloat(11), resultSet.getFloat(12), resultSet.getFloat(13), resultSet.getFloat(14), resultSet.getInt(15), resultSet.getFloat(16), resultSet.getInt(17), resultSet.getString(18)));
+
         }
     }
 
